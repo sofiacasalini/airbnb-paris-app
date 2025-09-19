@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+build/
+dist/
+
+# Conda
+*.conda
+*.yaml.lock
+
+# Virtual envs
+.venv/
+venv/
+ENV/
+.airbnb-app/
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Data
+data/
+!data/.gitkeep
+
+# Models
+models/*.joblib
+models/*.pkl
+
+# Logs
+*.log
+
+# Secrets
+.env
