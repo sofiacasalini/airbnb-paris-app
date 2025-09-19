@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
-import data_utils
-import model_utils
+import src.data_utils as data_utils
+import src.model_utils as model_utils
 import json
 
 st.title("🏠 Paris Airbnb - price explorer & predictor")
 
 # Load data
-DATA_PATH = "data/listings.csv.gz"
+DATA_PATH = "data/listings.csv"
 df = data_utils.load_data(DATA_PATH)
 
 # Sidebar filters

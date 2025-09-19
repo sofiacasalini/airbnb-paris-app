@@ -1,7 +1,8 @@
 import sys
 import os
-import src.data_utils
-import src.model_utils
+import pandas as pd
+import src.data_utils as data_utils
+import src.model_utils as model_utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

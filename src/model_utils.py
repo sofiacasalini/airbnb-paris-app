@@ -28,3 +28,4 @@ def train_model(df: pd.DataFrame, model_path="models/price_model.joblib", meta_p
 
 def load_model(model_path="models/price_model.joblib"):
     return joblib.load(model_path)
+
