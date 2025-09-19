@@ -1,0 +1,9 @@
+pytest
+requests
+matplotlib
+seaborn
+python==3.10
+streamlit
+scikit-learn
+joblib
+pandas
