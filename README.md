@@ -30,7 +30,7 @@ The app allows users to:
 - Optional Docker setup for containerized deployment.  
 
 ## Project structure 
-
+```text
 airbnb-paris-app/
 ├── app.py                     # Streamlit app
 ├── train.py                   # Script to train the model
@@ -50,7 +50,7 @@ airbnb-paris-app/
 │   └── workflows/
 │       └── ci.yml             # Continuous Integration workflow
 └── README.md
-
+```
 ## Installation
 
 1. Clone the repository:
