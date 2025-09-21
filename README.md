@@ -1,4 +1,4 @@
-# Airbnb Paris Price Explorer & Predictor
+# PAris Airbnb listings price explorer & predictor
 
 **🏠 Interactive Streamlit app for exploring Airbnb listings in Paris and predicting listing prices.**  
 
@@ -56,7 +56,7 @@ airbnb-paris-app/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/<your-username>/airbnb-paris-app.git
+git clone https://github.com/sofiacasalini/airbnb-paris-app.git
 cd airbnb-paris-app
 ```
 
