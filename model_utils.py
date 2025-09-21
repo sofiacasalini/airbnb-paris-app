@@ -5,17 +5,25 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.linear_model import LinearRegression
+from sklearn.impute import SimpleImputer
+
 
 def train_and_save_model(df, path="models/price_model.joblib"):
     features = ["bedrooms", "neighbourhood_cleansed"]
     X = df[features]
     y = df["price"]
 
-    # Preprocessing: scale numeric + one-hot encode categorical
+    # Preprocessing: handle missing values + scale numeric + one-hot encode categorical
     preprocessor = ColumnTransformer(
         transformers=[
-            ("num", StandardScaler(), ["bedrooms"]),
-            ("cat", OneHotEncoder(handle_unknown="ignore"), ["neighbourhood_cleansed"]),
+            ("num", Pipeline([
+                ("imputer", SimpleImputer(strategy="median")),  # fill missing numeric
+                ("scaler", StandardScaler())
+            ]), ["bedrooms"]),
+            ("cat", Pipeline([
+                ("imputer", SimpleImputer(strategy="most_frequent")),  # fill missing categorical
+                ("onehot", OneHotEncoder(handle_unknown="ignore"))
+            ]), ["neighbourhood_cleansed"])
         ]
     )
 
