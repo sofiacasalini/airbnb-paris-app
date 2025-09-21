@@ -5,8 +5,7 @@
 The app allows users to:
 
 - Visualize the **average price per neighborhood** on a map with a color gradient.
-- Explore **monthly price trends** with line charts.
-- Predict the **price of a listing** based on number of bedrooms and neighborhood, using a trained machine learning pipeline.
+- Predict the **price of a listing** based on number of bedrooms and neighborhood, using a trained pipeline.
 
 ---
 
@@ -33,17 +32,23 @@ The app allows users to:
 ## Project structure 
 
 airbnb-paris-app/
-├── src/
-│ ├── app.py # Streamlit app
-│ ├── model_utils.py # Training and prediction utilities
-│ └── data_utils.py # Data loading/cleaning functions
+├── app.py                     # Streamlit app
+├── train.py                   # Script to train the model
+├── model_utils.py             # Training and prediction utilities
+├── data_utils.py              # Data loading/cleaning functions
 ├── tests/
-│ └── test_data_utils.py # Unit tests for data utilities
+│   ├── test_data_utils.py     # Unit tests for data utilities
+│   └── test_model_utils.py    # Unit tests for model utilities
 ├── data/
-│ └── listings.csv # Airbnb listings dataset
-├── models/ # Saved model pipelines (optional)
-├── requirements.txt # Python dependencies
-├── Dockerfile # Docker setup
+│   └── listings.csv           # Airbnb listings dataset
+├── models/                    # Saved model pipelines (optional)
+├── requirements.txt           # Python dependencies
+├── environment.yml            # Conda environment file
+├── Dockerfile                 # Docker setup
+├── .gitignore                 # Git ignore file
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # Continuous Integration workflow
 └── README.md
 
 ## Installation
@@ -87,3 +92,26 @@ python -m pytest
 docker build -t airbnb-paris-app .
 ```
 
+### Run the container
+```bash
+docker run -p 8501:8501 airbnb-paris-app
+```
+
+## Push to Docker Hub
+#### 1. Log in
+```bash
+docker login
+```
+#### 2. Tag the image
+```bash
+docker tag airbnb-paris-app your-dockerhub-username/airbnb-paris-app:latest
+```
+#### 3. Push to Docker Hub
+```bash
+docker push your-dockerhub-username/airbnb-paris-app:latest
+```
+#### 4. Pull and run anywhere
+```bash
+docker pull your-dockerhub-username/airbnb-paris-app:latest  
+docker run -p 8501:8501 your-dockerhub-username/airbnb-paris-app:latest
+```
