@@ -1,4 +1,4 @@
-# PAris Airbnb listings price explorer & predictor
+# Paris Airbnb listings price explorer & predictor
 
 **🏠 Interactive Streamlit app for exploring Airbnb listings in Paris and predicting listing prices.**  
 
