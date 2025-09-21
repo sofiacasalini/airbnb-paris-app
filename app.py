@@ -1,39 +1,68 @@
 import streamlit as st
 import pandas as pd
-import src.data_utils as data_utils
-import src.model_utils as model_utils
-import json
+import pydeck as pdk
+import matplotlib.pyplot as plt
+from model_utils import load_model, predict_price
+from data_utils import load_data
 
-st.title("🏠 Paris Airbnb - price explorer & predictor")
+st.title("🏠 Paris Airbnb price explorer & predictor")
 
-# Load data
-DATA_PATH = "data/listings.csv"
-df = data_utils.load_data(DATA_PATH)
+# ------------------------
+# Load data with caching
+# ------------------------
+@st.cache_data
+def get_data():
+    return load_data("data/listings.csv") 
+df = get_data()
 
-# Sidebar filters
-st.sidebar.header("Filters")
-price_range = st.sidebar.slider("Price range", 10, 500, (50, 200))
-room_type = st.sidebar.selectbox("Room type", options=[None] + list(df["room_type"].unique()))
+# ------------------------
+# Data exploration
+# ------------------------
+st.header("Paris Airbnb prices EDA")
 
-# Filtered dataset
-filtered = data_utils.filter_data(df, price_range[0], price_range[1], room_type)
-st.write(f"Showing {len(filtered)} listings")
-st.dataframe(filtered.head(20))
+# Map visualization: average price per neighbourhood
+st.subheader("Price Distribution by Neighbourhood (Map)")
 
-# Price distribution
-st.subheader("Price distribution")
-st.bar_chart(filtered["price"].value_counts().sort_index())
+neigh_prices = df.groupby("neighbourhood_cleansed").agg(
+    lat=("latitude", "mean"),
+    lon=("longitude", "mean"),
+    price=("price", "mean")
+).reset_index()
 
-# Prediction section
-st.subheader("💡 Price prediction")
-min_nights = st.number_input("Minimum nights", 1, 365, 3)
-reviews = st.number_input("Number of reviews", 0, 500, 10)
-avail = st.slider("Availability (days/year)", 0, 365, 180)
+layer = pdk.Layer(
+    "ScatterplotLayer",
+    data=neigh_prices,
+    get_position=["lon", "lat"],
+    get_radius=100,
+    get_fill_color="[255, 0, 0, 140]",
+    pickable=True,
+)
 
-model = model_utils.load_model()
-with open("models/metadata.json") as f:
-    meta = json.load(f)
+view_state = pdk.ViewState(latitude=48.8566, longitude=2.3522, zoom=11)
+st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view_state))
 
-features = [[min_nights, reviews, avail]]
-pred = model.predict(features)[0]
-st.write(f"💰 Predicted price: €{pred:.2f}")
+# ------------------------
+# Price distribution by month
+# ------------------------
+st.subheader("Price distribution by month")
+df["date"] = pd.to_datetime(df["last_scraped"], errors="coerce")
+df["month"] = df["date"].dt.month
+
+fig, ax = plt.subplots()
+df.groupby("month")["price"].mean().plot(kind="line", ax=ax)
+ax.set_xlabel("Month")
+ax.set_ylabel("Average Price (€)")
+st.pyplot(fig)
+
+# ------------------------
+# Prediction
+# ------------------------
+st.header("💡Price predictor")
+
+bedrooms = st.number_input("Number of bedrooms", min_value=0, max_value=10, value=1)
+neighbourhood = st.selectbox("Neighbourhood", df["neighbourhood_cleansed"].unique())
+
+model = load_model("models/price_model.joblib")
+prediction = predict_price(model, {"bedrooms": bedrooms, "neighbourhood_cleansed": neighbourhood})
+
+st.write(f"💡 Predicted price: €{prediction:.2f}")
